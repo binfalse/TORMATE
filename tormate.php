@@ -110,9 +110,9 @@ if ($url && check_url ($url)) {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
         curl_setopt($ch, CURLOPT_USERAGENT, "tormate");
         // regularly check progress to limit file size
-        curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
-        curl_setopt($ch, CURLOPT_NOPROGRESS, false);
         if (MAX_FILE_SIZE > 0) {
+            curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
+            curl_setopt($ch, CURLOPT_NOPROGRESS, false);
             curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($download_size, $downloaded, $upload_size, $uploaded){
                 // stop connection if download exceeds max file size
                 if ($downloaded > (MAX_FILE_SIZE)) {
