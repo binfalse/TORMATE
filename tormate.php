@@ -63,7 +63,7 @@ if (is_file ($cachefile))
 
 
 // check if there are old things that can be deleted
-if (sizeof ($cachedata) >= MAX_CACHE) {
+if (sizeof ($cachedata) >= MAX_CACHE && MAX_TIME > 0) {
     foreach ($cachedata as $site => $prefs) {
         $cachedversion = CACHE_DIR . "/" . $site;
         if ($prefs["time"] + MAX_TIME < time () || !is_file ($cachedversion)) {
@@ -95,7 +95,7 @@ if ($url && check_url ($url)) {
     // download the page if we haven't already
     if (!isset ($cachedata[$hash]) || !is_file ($cachedversion)) {
         // cache limit reached?
-        if (sizeof ($cachedata) >= MAX_CACHE) {
+        if (sizeof ($cachedata) >= MAX_CACHE && MAX_CACHE > 0) {
             usage ("cache limit reached", 429);
         }
 
@@ -112,12 +112,14 @@ if ($url && check_url ($url)) {
         // regularly check progress to limit file size
         curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
         curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($download_size, $downloaded, $upload_size, $uploaded){
-            // stop connection if download exceeds max file size
-            if ($downloaded > (MAX_FILE_SIZE)) {
-                usage ("requested file is too large", 400);
-            }
-        });
+        if (MAX_FILE_SIZE > 0) {
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($download_size, $downloaded, $upload_size, $uploaded){
+                // stop connection if download exceeds max file size
+                if ($downloaded > (MAX_FILE_SIZE)) {
+                    usage ("requested file is too large", 400);
+                }
+            });
+        }
 
         // run curl
         $response = curl_exec($ch);

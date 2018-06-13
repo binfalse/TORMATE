@@ -30,6 +30,7 @@ define ("CACHE_DIR", "/tmp/tormate-cache/");
  * they get deleted from cache and we need to download them again
  *
  * defaults to 1 hour
+ * set to 0 to disable the limitation
  */
 define ("MAX_TIME", 60*60);
 
@@ -37,12 +38,14 @@ define ("MAX_TIME", 60*60);
  * if a website reaches MAX_TIME, it gets removed from the cache
  *
  * defaults to 100
+ * set to 0 to disable the limitation
  */
 define ("MAX_CACHE", 100);
 
 /* what is the maximum file size? we don't want to download movies or something...
  *
  * defaults to 5MB
+ * set to zero to disable the limitation
  */
 define ("MAX_FILE_SIZE", 5 * 1024 * 1024);
 
