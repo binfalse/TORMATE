@@ -34,11 +34,24 @@ function check_url ($url) {
     return false;
 }
 
+function usage ($msg, $response) {
+    http_response_code ($response);
+    $title = "TORMATE is TOR's mate";
+    echo "<html><head><title>$title</title></head><body><h1>$title</h1>";
+
+    if ($msg)
+        echo "<h2>Error</h2><code>$msg</code>";
+
+    $currentlink = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    echo "<h2>Usage</h2><p>Send the page that you want to retrieve from the legacy web as the <code>url</code> parameter in an HTTP GET request. For example, to retrieve the page <a href='https://binfalse.de/'>https://binfalse.de/</a> you would call:</p><pre>" . $currentlink . "?url=https://binfalse.de/</pre>";
+    echo "<p>For more information see <a href='https://github.com/binfalse/tormate'>github.com/binfalse/tormate</a>.</p>";
+    echo "</body></html>";
+    die ();
+}
 
 // check if cache dir is available, otherwise try to prepare it
 if (!is_dir (CACHE_DIR) && !mkdir (CACHE_DIR)) {
-    http_response_code (500);
-    die ("error creating cache dir...");
+    usage ("error creating cache dir...", 500);
 }
 
 $cachefile = CACHE_DIR . "/cache";
@@ -65,8 +78,7 @@ if (sizeof ($cachedata) >= MAX_CACHE) {
 
 // did the client provide a url?
 if (!isset ($_GET['url']) || empty ($_GET['url'])) {
-    http_response_code (400);
-    die ("no url provided");
+    usage ("no url provided", 400);
 }
 
 // grab the sanitised url
@@ -84,8 +96,7 @@ if ($url && check_url ($url)) {
     if (!isset ($cachedata[$hash]) || !is_file ($cachedversion)) {
         // cache limit reached?
         if (sizeof ($cachedata) >= MAX_CACHE) {
-            http_response_code (429);
-            die ("cache limit reached");
+            usage ("cache limit reached", 429);
         }
 
         // config for the new web page
@@ -104,8 +115,7 @@ if ($url && check_url ($url)) {
         curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($download_size, $downloaded, $upload_size, $uploaded){
             // stop connection if download exceeds max file size
             if ($downloaded > (MAX_FILE_SIZE)) {
-                http_response_code (400);
-                die ("requested file is too large");
+                usage ("requested file is too large", 400);
             }
         });
 
@@ -148,8 +158,7 @@ if ($url && check_url ($url)) {
     readfile ($cachedversion);
 } else {
     // ups... the client provided an unsupported url..
-    http_response_code (400);
-    die ("this url is not supported..");
+    usage ("this url is not supported..", 400);
 }
 
 
