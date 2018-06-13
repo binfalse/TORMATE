@@ -50,4 +50,11 @@ define ("MAX_CACHE", 100);
 define ("MAX_FILE_SIZE", 5 * 1024 * 1024);
 
 
+/* should TORMATE use another proxy to connect to the web?
+ *
+ * undefined by default
+ */
+//define ("PROXY", "some.server.org:8888")
+
+
 ?>

@@ -120,6 +120,10 @@ if ($url && check_url ($url)) {
                 }
             });
         }
+        // should we proxy again?
+        if (defined ('PROXY')) {
+            curl_setopt($ch, CURLOPT_PROXY, PROXY);
+        }
 
         // run curl
         $response = curl_exec($ch);
