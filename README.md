@@ -1,26 +1,28 @@
-# TORMATE is TOR's mate
+# TORMATE is Tor's mate
 
 Tor is a tool for annonymous communication over the internet.
 However, there are a number websites that block traffic from the Tor network (or require solving a captcha, which cannot be done by your RSS reader etc..).
-And that's why Tor needs a mate: TORMATE.
-TORMATE helps you fight against anti annonymity ;-)
+And that's why Tor needs a mate: TORMATE :)
+
+TORMATE helps you fight against anti-anonymity.
 
 
 
 
 ## Idea and Usage
 
-You can think of TORMATE a gate into the web of Tor-blockers.
-TORMATE can deliver websites, that would otherwise be inaccessible from the Tor network.
-Just submit the URL of the desired content throught a GET parameter and TORMATE will download the website for you.
+You can think of TORMATE as a gate into the web of Tor-blockers.
+TORMATE can deliver resources from the legacy web, that would otherwise be inaccessible from the Tor network.
+Just submit the URL of the desired content throught a [GET](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods) parameter and TORMATE will download the resource for you.
 For example, to get the content of [https://binfalse.de](https://binfalse.de), you would call the following URL (assuming that you installed TORMATE at `https://tormate.url/tormate.php`):
 
     https://tormate.url/tormate.php?url=http://binfalse.de 
 
+<small>(please note that `https://binfalse.de` is also available from Tor without the need for TORMATE)</small>
 
-TORMATE will then check if it already has the page behind `http://binfalse.de` in cache.
+TORMATE will then check if it already cached the page behind `http://binfalse.de`.
 If it's not in cache, it will download the page and store it in cache.
-Anyway, it will forward the content to your client application - including a forwarded `content-type`, `etag`, and `content-disposition` if available.
+Anyway, it will forward the content to your client application - including a forwarded [status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes), `content-type`, `etag`, and `content-disposition` if available.
 Cache settings and quotas can be configured.
 
 Thus, in my RSS reader I can now add a feed of a Cloudflare (or similar) website, eg:
@@ -28,8 +30,6 @@ Thus, in my RSS reader I can now add a feed of a Cloudflare (or similar) website
 
     https://tormate.url/tormate.php?url=https://contao.org/share/news-de.xml
 
-
-(please note that `https://binfalse.de` is also available from Tor without the need for TORMATE)
 
 
 ## Setup
@@ -51,12 +51,13 @@ TORMATE provides the following settings:
 
 All limits can also be disabled.
 However, I recommend choosing proper values for `MAX_TIME` and `MAX_CACHE`, as they will prevent abuse.
-For example, with 100 files per hour (default) is rather useless for DDOS attacks, or similar.
+For example, with a maximum of 100 files per hour (default), TORMATE is rather useless for [DoS attacks](https://en.wikipedia.org/wiki/Denial-of-service_attack) etc.
 In addition, limiting the file size may prevent downloading videos etc.
-If you know, that you just need TORMATE for five resources and change less than once a day anyway, you may want to set `MAX_TIME` to 60*60*24 (24 hours) and `MAX_CACHE` to 5.
+
+If you for example know, that you just need TORMATE for five resources and change less than once a day anyway, you may want to set `MAX_TIME` to 60\*60\*24 (24 hours) and `MAX_CACHE` to 5.
 
 
-### Dockerisation
+### Dockerised Installation
 
 TORMATE is also available as a Docker image at [binfalse/tormate](https://hub.docker.com/r/binfalse/tormate/).
 The image has the TORMATE tool installed as `index.php`, so you just need to connect to the root of the webserver (without any `/tormate.php` or something).
@@ -76,16 +77,16 @@ Navigate your web browser to that machine and you should see some message from T
 ## Discussion
 
 
-Sure, TORMATE is just a workaround and doesn't solve the problem.
-A better solution would be to contact the owners of a website, explain your situation, and try to convince them to unblock Tor.
-However, some still *fear* the *bad* traffic, which they say comes from Tor...!?
+Sure, TORMATE is just a workaround and doesn't solve the problem with nasty Tor-blockers.
+A better solution would be to contact the owners of a website, explain the situation, and try to convince them to unblock Tor users.
+However, some still *fear* the *bad* traffic, which they say comes from Tor...!?  
 Consequently, you should avoid these Tor-blockers.
 Unfortunately, there are situations that still force you into requiring the content (e.g. at work).
 Typically, you would need to disable Tor for these Websites, but now there is TORMATE to help you getting access, without extending other software to implement exceptions or something!
 
 **Do not install TORMATE in sensitive networks!**
-Other people may get access to machines, which aren't accessible by default.
-For example, an attacker could call `https://tormate.url/tormate.php?url=https://hidden.machine.org/secret.html` and TORMATE will deliver the `secret.html` file, while the attacker regularly does not have access to `hidden.machine.org` (e.g. because of a firewall in between).
+Otherwise, people may get access to machines, which aren't accessible by default.
+For example, an attacker could call `https://tormate.url/tormate.php?url=https://hidden.machine.org/secret.html` and TORMATE will deliver the `secret.html` file, while the attacker regularly does not have access to `hidden.machine.org` (e.g. because of a firewall in between attacker and `hidden.machine.org`).
 Thus, TORMATE may accidentally help people to bypass firewalls...
 
 
