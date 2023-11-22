@@ -57,4 +57,12 @@ define ("MAX_FILE_SIZE", 5 * 1024 * 1024);
 //define ("PROXY", "some.server.org:8888")
 
 
+/* secret that clients need to provide to use the gate
+ *
+ * undefined by default
+ */
+//define ("TORMATE_SECRET", "verysecret")
+
+
+
 ?>

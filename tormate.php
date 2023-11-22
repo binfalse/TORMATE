@@ -49,6 +49,13 @@ function usage ($msg, $response) {
     die ();
 }
 
+function download_progress ($download_size, $downloaded, $upload_size, $uploaded){
+    // stop connection if download exceeds max file size
+    if ($downloaded > (MAX_FILE_SIZE)) {
+        usage ("requested file is too large", 400);
+    }
+};
+
 // check if cache dir is available, otherwise try to prepare it
 if (!is_dir (CACHE_DIR) && !mkdir (CACHE_DIR)) {
     usage ("error creating cache dir...", 500);
@@ -75,6 +82,9 @@ if (sizeof ($cachedata) >= MAX_CACHE && MAX_TIME > 0) {
     }
 }
 
+if (defined ('TORMATE_SECRET') && (!isset ($_GET['secret']) || $_GET['secret'] !== TORMATE_SECRET)) {
+    usage ("missing secret", 401);
+}
 
 // did the client provide a url?
 if (!isset ($_GET['url']) || empty ($_GET['url'])) {
@@ -113,12 +123,7 @@ if ($url && check_url ($url)) {
         if (MAX_FILE_SIZE > 0) {
             curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
             curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($download_size, $downloaded, $upload_size, $uploaded){
-                // stop connection if download exceeds max file size
-                if ($downloaded > (MAX_FILE_SIZE)) {
-                    usage ("requested file is too large", 400);
-                }
-            });
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'download_progress');
         }
         // should we proxy again?
         if (defined ('PROXY')) {
